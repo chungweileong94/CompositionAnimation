@@ -81,7 +81,7 @@ namespace CompositionAnimation
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            for (int i = 0; i < 10; i++) List.Add($"Item {i + 1}");
+            for (int i = 0; i < 5; i++) List.Add($"Item {i + 1}");
         }
 
 

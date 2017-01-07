@@ -77,6 +77,12 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <ListView x:Name="ItemListView" ItemsSource="{x:Bind List, Mode=OneWay}" SelectionMode="None">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <ItemsStackPanel ItemsUpdatingScrollMode="KeepLastItemInView"/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalAlignment" Value="Stretch"/>
@@ -113,7 +119,7 @@
             </Grid>
             
             <Grid x:Name="AddButtonGrid" VerticalAlignment="Top">
-                <Grid HorizontalAlignment="Right" Margin="25,0">
+                <Grid HorizontalAlignment="Right" Margin="50,0">
                     <Ellipse x:Name="AddButtonShadow" Fill="Gray" Width="48" Height="48"/>
                     <Button x:Name="AddButton" Content="&#xE109;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="White" Background="YellowGreen" Width="50" Height="50"  Style="{StaticResource CircleButtonStyle}" Click="Button_Click"/>
                 </Grid>
