@@ -76,13 +76,13 @@
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <ListView x:Name="ItemListView" ItemsSource="{x:Bind List, Mode=OneWay}" SelectionMode="None">
-            <ListView.ItemsPanel>
+        <ListView x:Name="ItemListView" ItemsSource="{x:Bind List, Mode=OneWay}" SelectionMode="None" ShowsScrollingPlaceholders="False" ItemContainerTransitions="{x:Null}" ContainerContentChanging="ItemListView_ContainerContentChanging">
+            <!--<ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <ItemsStackPanel ItemsUpdatingScrollMode="KeepLastItemInView"/>
                 </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
-            
+            </ListView.ItemsPanel>-->
+
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalAlignment" Value="Stretch"/>
@@ -117,7 +117,7 @@
             <Grid x:Name="HeaderTextGrid" Height="80" VerticalAlignment="Top">
                 <TextBlock Text="Header" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{ThemeResource TitleTextBlockStyle}"/>
             </Grid>
-            
+
             <Grid x:Name="AddButtonGrid" VerticalAlignment="Top">
                 <Grid HorizontalAlignment="Right" Margin="50,0">
                     <Ellipse x:Name="AddButtonShadow" Fill="Gray" Width="48" Height="48"/>

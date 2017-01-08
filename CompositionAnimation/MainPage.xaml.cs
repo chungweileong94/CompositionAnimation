@@ -82,7 +82,7 @@ namespace CompositionAnimation
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            for (int i = 0; i < 5; i++) List.Add($"Item {i + 1}");
+            for (int i = 0; i < 10; i++) List.Add($"Item {i + 1}");
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -97,6 +97,63 @@ namespace CompositionAnimation
                 _headerBackShadowVisual.Size = new Vector2((float)HeaderBackgroundShadowBorder.ActualWidth, (float)HeaderBackgroundShadowBorder.ActualHeight);
                 ElementCompositionPreview.SetElementChildVisual(HeaderBackgroundShadowBorder, _headerBackShadowVisual);
             }
+        }
+
+        private void ItemListView_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
+        {
+            if (!args.InRecycleQueue)
+            {
+                args.ItemContainer.Loaded += ItemContainer_Loaded;
+            }
+        }
+
+        private void ItemContainer_Loaded(object sender, RoutedEventArgs e)
+        {
+            var itemContainer = sender as ListViewItem;
+            var itemsPanel = ItemListView.ItemsPanelRoot as ItemsStackPanel;
+            var itemIndex = ItemListView.IndexFromContainer(itemContainer);
+
+            if (itemIndex >= itemsPanel.FirstVisibleIndex && itemIndex <= itemsPanel.LastVisibleIndex)
+            {
+                if (_compositor == null) _compositor = ElementCompositionPreview.GetElementVisual(this).Compositor;
+
+                var visual = ElementCompositionPreview.GetElementVisual(itemContainer);
+
+                visual.Scale = new Vector3(1, 1, 1);
+                visual.CenterPoint = new Vector3((float)itemContainer.ActualWidth / 2, (float)itemContainer.ActualHeight / 2, 0);
+                visual.Size = new Vector2((float)itemContainer.ActualWidth, (float)itemContainer.ActualHeight);
+                visual.Offset = new Vector3(0, 0, 0);
+                visual.Opacity = 0;
+
+                var fadeAnimation = _compositor.CreateScalarKeyFrameAnimation();
+                fadeAnimation.InsertKeyFrame(1f, 1f);
+                fadeAnimation.Duration = TimeSpan.FromMilliseconds(600);
+                fadeAnimation.DelayTime = TimeSpan.FromMilliseconds(100 * itemIndex);
+                fadeAnimation.Target = "Opacity";
+
+                var scaleAnimation = _compositor.CreateVector3KeyFrameAnimation();
+                scaleAnimation.InsertKeyFrame(0, new Vector3(0, 0, 1f));
+                scaleAnimation.InsertKeyFrame(1f, new Vector3(1f, 1f, 1f));
+                scaleAnimation.Duration = TimeSpan.FromMilliseconds(500);
+                scaleAnimation.DelayTime = TimeSpan.FromMilliseconds(100 * itemIndex);
+                scaleAnimation.Target = "Scale";
+
+                var offsetAnimation = _compositor.CreateVector3KeyFrameAnimation();
+                offsetAnimation.InsertKeyFrame(0, new Vector3(0, -200, 0));
+                offsetAnimation.InsertKeyFrame(1f, new Vector3(0, 0, 0));
+                offsetAnimation.Duration = TimeSpan.FromMilliseconds(300);
+                offsetAnimation.DelayTime = TimeSpan.FromMilliseconds(100 * itemIndex);
+                offsetAnimation.Target = "Offset";
+
+                var animationGroup = _compositor.CreateAnimationGroup();
+                animationGroup.Add(fadeAnimation);
+                animationGroup.Add(scaleAnimation);
+                animationGroup.Add(offsetAnimation);
+
+                visual.StartAnimationGroup(animationGroup);
+            }
+
+            itemContainer.Loaded -= ItemContainer_Loaded;
         }
 
         private childItem FindVisualChild<childItem>(DependencyObject obj) where childItem : DependencyObject
