@@ -110,7 +110,7 @@
                 Height="200" 
                 VerticalAlignment="Top">
 
-                <Border x:Name="HeaderBackgroundShadowBorder"/>
+                <Border x:Name="HeaderBackgroundShadowBorder" SizeChanged="HeaderBackgroundShadowBorder_SizeChanged"/>
                 <Grid Background="{ThemeResource SystemControlBackgroundAccentBrush}"/>
             </Grid>
 

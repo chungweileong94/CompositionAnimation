@@ -25,6 +25,7 @@ namespace CompositionAnimation
     {
         public ObservableCollection<string> List { get; set; }
         Compositor _compositor;
+        SpriteVisual _headerBackShadowVisual;
 
         public MainPage()
         {
@@ -55,7 +56,7 @@ namespace CompositionAnimation
                 var textVisual = ElementCompositionPreview.GetElementVisual(HeaderTextGrid);
                 textVisual.StartAnimation("Offset.Y", _headerTextOffsetExpressionAnimation);
 
-                var _headerBackShadowVisual = _compositor.CreateSpriteVisual();
+                _headerBackShadowVisual = _compositor.CreateSpriteVisual();
                 var _dropShadow = _compositor.CreateDropShadow();
                 _dropShadow.BlurRadius = 12f;
                 _dropShadow.Color = Colors.Black;
@@ -84,6 +85,19 @@ namespace CompositionAnimation
             for (int i = 0; i < 5; i++) List.Add($"Item {i + 1}");
         }
 
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            List.Add($"Item {List.Count + 1}");
+        }
+
+        private void HeaderBackgroundShadowBorder_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (_headerBackShadowVisual != null)
+            {
+                _headerBackShadowVisual.Size = new Vector2((float)HeaderBackgroundShadowBorder.ActualWidth, (float)HeaderBackgroundShadowBorder.ActualHeight);
+                ElementCompositionPreview.SetElementChildVisual(HeaderBackgroundShadowBorder, _headerBackShadowVisual);
+            }
+        }
 
         private childItem FindVisualChild<childItem>(DependencyObject obj) where childItem : DependencyObject
         {
@@ -103,11 +117,6 @@ namespace CompositionAnimation
             }
 
             return null;
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            List.Add($"Item {List.Count + 1}");
         }
     }
 }
